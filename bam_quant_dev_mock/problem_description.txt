@@ -1,0 +1,21 @@
+BAM Quant Dev Coding Test - Mock Challenge
+
+You are to implement a TradeAnalyticsEngine that ingests trade data and provides real-time analytics.
+
+Input File: trades.csv
+Columns:
+- timestamp: ISO8601 format (UTC)
+- symbol: e.g., AAPL, MSFT
+- side: BUY or SELL
+- price: float
+- quantity: int
+
+Tasks:
+1. Parse the data and store as Trade objects.
+2. Compute 5-minute rolling VWAP per symbol.
+3. Compute average trade size per symbol.
+4. Handle out-of-order data and malformed input.
+5. Support both batch (from file) and streaming (real-time) ingestion.
+6. (Bonus) Add unit tests for VWAP and avg trade size.
+
+See prompt for full details.
