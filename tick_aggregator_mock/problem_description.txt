@@ -1,0 +1,25 @@
+Quant Dev Take-Home Exercise: Tick Data Aggregator
+
+You are given a CSV file of tick-level market data:
+Fields:
+- timestamp (ISO8601, UTC)
+- symbol (string)
+- price (float)
+- quantity (int)
+
+Your task is to implement a TickAggregator that:
+1. Ingests tick data as a stream (one by one).
+2. Aggregates into 1-minute bars per symbol.
+   - Each bar should have: timestamp (minute), open, high, low, close, volume
+3. Supports a method: `get_latest_bar(symbol) -> Bar` that returns the most recent completed bar.
+4. Handles out-of-order ticks up to 30 seconds late.
+5. Ignores malformed rows and logs warnings.
+
+Bonus:
+- Design the system to scale across many symbols.
+- Support batch ingestion from file (`load_from_file`).
+- Add unit tests for bar generation and late-tick handling.
+
+Deliverable:
+- One Python module (no external libraries except standard lib and pandas for loading only).
+- Output sample bar data for at least 2 symbols to validate your code.

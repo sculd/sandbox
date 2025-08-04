@@ -46,7 +46,7 @@ class CircularWindow:
 
 def _parse_tpq(t, p, q):
     if type(t) == str:
-        t = datetime.datetime.strptime(t)
+        t = datetime.datetime.strptime(t, _datetime_format)
     if type(p) == str:
         p = float(p)
     if type(q) == str:
