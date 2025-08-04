@@ -50,7 +50,7 @@ class BarSeries:
         self.t_latest = max(self.t_latest, t)
 
     def ingest(self, t, p, q):
-        if t - self.t_latest < -datetime.timedelta(minutes=10, seconds=30):
+        if t - self.t_latest < -datetime.timedelta(minutes=1, seconds=30):
             # drop old message
             return
         self.t_latest = max(self.t_latest, t)
@@ -68,14 +68,17 @@ class BarSeries:
         while popped:
             self.bars.append(popped.pop())
 
+    def get_latest_bar(self):
+        if self.is_empty():
+            return None
+        return self.bars[-1]
+
 class Aggregator:
     def __init__(self):
         self.bars = collections.defaultdict(BarSeries)
 
     def get_latest_bar(self, symbol):
-        if self.bars[symbol].is_empty():
-            return None
-        return self.bars[symbol][-1]
+        return self.bars[symbol].get_latest_bar()
 
     def aggregate(self, file_name):
         with open(file_name, "r") as f:
@@ -94,7 +97,7 @@ class Aggregator:
 
 if __name__ == "__main__":
     a = Aggregator()
-    a.aggregate("tick_aggregator_mock/ticks_MSFT.csv")
+    a.aggregate("tick_aggregator_mock/ticks.csv")
 
     for s, bars in a.bars.items():
         print(s)
