@@ -26,8 +26,8 @@ class Bar:
         return f"{self.t}, ({self.o}, {self.h}, {self.l}, {self.c}), {self.q}"
 
     def update(self, t, p, q):
-        t_mintely = t.replace(second=0)
-        if self.t != t_mintely:
+        t_minutely = t.replace(second=0)
+        if self.t != t_minutely:
             return
 
         self.h = max(self.h, p)
@@ -45,25 +45,28 @@ class BarSeries:
     def is_empty(self):
         return not self.bars
 
-    def _update_bar(self, t, p, q):
-        if t - self.t_latest < datetime.timedelta(seconds=-30):
-            # drop old message
-            pass
+    def _append_bar(self, t, p, q):
+        self.bars.append(Bar(t.replace(second=0), p, p, p, p, q))
         self.t_latest = max(self.t_latest, t)
 
-        if not self.bars:
-            return
-        
-        self.bars[-1].update(t, p, q)
-        if len(self.bars) > 1:
-            self.bars[-2].update(t, p, q)
-
     def ingest(self, t, p, q):
-        t_mintely = t.replace(second=0)
-        if self.is_empty() or t_mintely > self.bars[-1].t:
-            self.bars.append(Bar(t, p, p, p, p, q))
+        if t - self.t_latest < -datetime.timedelta(minutes=10, seconds=30):
+            # drop old message
+            return
+        self.t_latest = max(self.t_latest, t)
+
+        popped = []
+        t_minutely = t.replace(second=0)
+        while not self.is_empty() and self.bars[-1].t > t_minutely:
+            popped.append(self.bars.pop())
+
+        if self.is_empty() or self.bars[-1].t < t_minutely:
+            self._append_bar(t, p, q)
         else:
-            self._update_bar(t, p, q)
+            self.bars[-1].update(t, p, q)
+
+        while popped:
+            self.bars.append(popped.pop())
 
 class Aggregator:
     def __init__(self):
@@ -91,7 +94,7 @@ class Aggregator:
 
 if __name__ == "__main__":
     a = Aggregator()
-    a.aggregate("tick_aggregator_mock/ticks.csv")
+    a.aggregate("tick_aggregator_mock/ticks_MSFT.csv")
 
     for s, bars in a.bars.items():
         print(s)
