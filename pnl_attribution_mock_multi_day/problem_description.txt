@@ -1,0 +1,40 @@
+Quant Dev Take-Home Exercise: PnL Attribution Report Generator
+
+You are given:
+1. A file of trade executions:
+   - timestamp (ISO8601 UTC)
+   - strategy (string)
+   - symbol (string)
+   - side (BUY or SELL)
+   - price (float)
+   - quantity (int)
+
+2. A file of end-of-day prices:
+   - date (YYYY-MM-DD)
+   - symbol
+   - close_price
+
+3. A file of FX rates (EUR/USD):
+   - date (YYYY-MM-DD)
+   - eur_usd (e.g., 1.05)
+
+Tasks:
+1. Compute daily PnL per strategy:
+   - Realized PnL from executed trades
+   - Unrealized PnL from end-of-day price differences
+   - FX impact if EUR is involved (assume trades executed in EUR, but PnL is reported in USD)
+
+2. Output a report per strategy per day showing:
+   - realized_pnl_usd
+   - unrealized_pnl_usd
+   - fx_impact_usd
+   - total_pnl_usd
+
+Bonus:
+- Support any number of strategies and symbols
+- Add CLI to run report for a given date
+- Include simple unit tests for PnL calculation logic
+
+Constraints:
+- Use Python and standard libraries (+ pandas allowed for loading and grouping)
+- Write clean, modular code
